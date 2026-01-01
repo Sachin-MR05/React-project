@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import api from "./api/posts"
 import { roundToNearestMinutesWithOptions } from "date-fns/fp";
+import EditPost from "./EditPost";
 
 function App(){
   const [posts,setPosts]=useState([])
@@ -21,6 +22,8 @@ function App(){
   const [searchResults,setSearchResults]=useState([])
   const [postTitle,setPostTitle]=useState('')
   const [postBody,setPostBody]=useState('')
+  const [editTitle,setEditTitle] =useState('')
+  const [editBody,setEditBody] = useState(" ")
   const navigate = useNavigate()
 
   useEffect(()=>{
@@ -66,6 +69,21 @@ function App(){
   
   }
 
+  const hadleEdit =async(id)=>{
+    const datetime = format(new Date(),'MMMM dd, yyyyy pp');
+    const updatePost ={id,title:editTitle,datetime,body:editBody};
+    try{
+      const response = await api.put('/posts/${id}',updatedPost)
+      setPosts(posts.map(post=> post.id===id ? {...responce.data}:post));
+      setEditTitle('')
+      setEditBody('')
+      navigate('/')
+    }
+    catch(e){
+      console.log(e.message);
+    }
+  }
+
   const handleDelete=async(id)=>{
     try{
     await api.delete(`/posts/${id}`)
@@ -95,6 +113,16 @@ function App(){
             setPostBody={setPostBody}
           />} />
           <Route path=":id" element={<PostPage posts={posts} handleDelete={handleDelete}/>} />
+        </Route>
+        <Route>
+          <Route path="/edit/:id" element={<EditPost>
+            posts={posts}
+            handleDelete ={handleDelete}
+            editBody={editBody}
+            setEditBody ={setEditBody}
+            editTitle = {editTitle}
+            setEditTitle = {setEditTitle}
+          </EditPost>}></Route>
         </Route>
         <Route path="about" element={<About />} />
         <Route path="*" element={<Missing />} />
