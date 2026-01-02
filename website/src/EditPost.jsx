@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
-const EditPost = ({post, handleEdit,editBody,setEditBody,editTitle,setEditTiltle}) => {
+export  const EditPost = ({post, handleEdit,editBody,setEditBody,editTitle,setEditTiltle}) => {
   const {id} =useParams();
   const post =posts.find(post => (post.id).toString()===id);
 
@@ -22,4 +22,4 @@ return(
 )
 }
 
-export default EditPost
+
